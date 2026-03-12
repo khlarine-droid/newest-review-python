@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Newest Reviews</title>
+
+<style>
+
+body{
+font-family: Arial;
+margin:0;
+padding:40px;
+background:#fff;
+}
+
+.reviews-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+}
+
+.review-card{
+border:1px solid #eee;
+border-radius:10px;
+padding:16px;
+background:#fafafa;
+}
+
+.review-title{
+font-weight:bold;
+margin-bottom:6px;
+}
+
+.review-text{
+font-size:14px;
+color:#666;
+}
+
+.review-author{
+margin-top:10px;
+font-size:12px;
+color:#999;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>Newest Reviews</h2>
+
+<div id="reviews" class="reviews-grid"></div>
+
+<script>
+
+async function loadReviews(){
+
+try{
+
+const response = await fetch("/api/reviews");
+
+const data = await response.json();
+
+const reviews = data.results || [];
+
+const container = document.getElementById("reviews");
+
+if(!reviews.length){
+container.innerHTML = "No reviews available yet.";
+return;
+}
+
+reviews.forEach(review=>{
+
+const card = document.createElement("div");
+
+card.className = "review-card";
+
+card.innerHTML = `
+<div class="review-title">${review.review_title || ""}</div>
+<div class="review-text">${review.review_description || ""}</div>
+<div class="review-author">${review.review_name || "Verified Review"}</div>
+`;
+
+container.appendChild(card);
+
+});
+
+}catch(error){
+
+console.error("Widget error:",error);
+
+}
+
+}
+
+loadReviews();
+
+</script>
+
+</body>
+</html>
