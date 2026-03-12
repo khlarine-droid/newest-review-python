@@ -8,7 +8,7 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Api-Key": process.env.API_KEY
+        "X-Api-Key": 84e89a2e5be06a9eb5b9628242c071a6
       },
       body: JSON.stringify({
         limit: 50,
