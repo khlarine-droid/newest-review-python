@@ -1,0 +1,37 @@
+#reviews{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  margin-top:30px;
+}
+
+.review-card{
+  background:#f5f5f7;
+  border:1px solid rgba(0,0,0,.08);
+  border-radius:12px;
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  font-family:Open Sans;
+}
+
+.review-stars{
+  color:#e07800;
+}
+
+.review-text{
+  font-size:13px;
+  color:#666;
+}
+
+.review-footer{
+  display:flex;
+  justify-content:space-between;
+  font-size:11px;
+  margin-top:auto;
+}
+
+.review-read{
+  color:#e07800;
+}
