@@ -2,7 +2,7 @@
 <html>
 <head>
 <title>Newest Reviews</title>
-  <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -23,50 +23,7 @@ async function loadReviews() {
     return;
   }
 
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(data.message, "text/html");
-
-  const companies = doc.querySelectorAll(".h3.bold.notranslate");
-
-  container.innerHTML = "";
-
-  companies.forEach((el, index) => {
-
-    if(index >= 8) return;
-
-    const company = el.innerText.trim();
-
-    const reviewBlock = el.closest(".review-item") || el.parentElement;
-
-    const text =
-      reviewBlock.querySelector(".review-description")?.innerText ||
-      "Great product with excellent biohacking benefits.";
-
-    const author =
-      reviewBlock.querySelector(".review-author")?.innerText ||
-      "Verified Review";
-
-    const card = document.createElement("div");
-    card.className = "review-card";
-
-    card.innerHTML = `
-      <div class="review-company">
-        <strong>${company}</strong>
-      </div>
-
-      <div class="review-stars">★★★★★</div>
-
-      <p class="review-text">${text}</p>
-
-      <div class="review-footer">
-        <span>${author}</span>
-        <span class="review-read">Read More →</span>
-      </div>
-    `;
-
-    container.appendChild(card);
-
-  });
+  container.innerHTML = data.message;
 
 }
 
