@@ -8,7 +8,7 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Api-Key": 84e89a2e5be06a9eb5b9628242c071a6
+        "X-Api-Key": "38b2668904a5e2839b6106773444040b"
       },
       body: JSON.stringify({
         limit: 50,
@@ -17,18 +17,27 @@ export default async function handler(req, res) {
       })
     });
 
-    const data = await response.json();
+    const text = await response.text();
+
+    let data;
+
+    try {
+      data = JSON.parse(text);
+    } catch {
+      return res.status(500).json({
+        error: "API returned non-JSON response",
+        raw: text
+      });
+    }
 
     res.setHeader("Access-Control-Allow-Origin", "*");
 
-    return res.status(200).json(data);
+    res.status(200).json(data);
 
   } catch (error) {
 
-    console.error("Proxy error:", error);
-
-    return res.status(500).json({
-      error: "Proxy failed"
+    res.status(500).json({
+      error: error.message
     });
 
   }
