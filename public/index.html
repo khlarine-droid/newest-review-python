@@ -26,7 +26,7 @@ async function loadReviews() {
   const parser = new DOMParser();
   const doc = parser.parseFromString(data.message, "text/html");
 
-  const reviews = doc.querySelectorAll(".review");
+  const reviews = doc.querySelectorAll("article, .media, .review-item");
 
   container.innerHTML = "";
 
@@ -34,10 +34,18 @@ async function loadReviews() {
 
     if(index >= 8) return;
 
-    const company = review.querySelector(".notranslate")?.innerText || "Company";
-    const title = review.querySelector(".review-title")?.innerText || "";
-    const text = review.querySelector(".review-description")?.innerText || "";
-    const author = review.querySelector(".review-author")?.innerText || "Verified Review";
+    const company =
+      review.querySelector(".notranslate")?.innerText ||
+      review.querySelector("a")?.innerText ||
+      "Company";
+
+    const text =
+      review.querySelector("p")?.innerText ||
+      "Review description";
+
+    const author =
+      review.innerText.match(/Submitted by (.*)/)?.[1] ||
+      "Verified Review";
 
     const card = document.createElement("div");
 
