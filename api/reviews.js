@@ -4,44 +4,28 @@ export default async function handler(req, res) {
 
   try {
 
-    const params = new URLSearchParams();
-    params.append("review_status", "2");
-    params.append("results_per_page", "12");
-    params.append("page", "1");
-
     const response = await fetch(API_URL, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.VERCEL_API_KEY}`,
-        "Content-Type": "application/x-www-form-urlencoded"
+        "Content-Type": "application/json",
+        "X-Api-Key": process.env.API_KEY
       },
-      body: params
+      body: JSON.stringify({
+        limit: 50,
+        page: 1,
+        output_type: "array"
+      })
     });
 
-    const text = await response.text();
-
-    console.log("UPSTREAM STATUS:", response.status);
-    console.log("UPSTREAM BODY:", text);
-
-    if (!response.ok) {
-      return res.status(502).json({
-        error: "Upstream API failed",
-        status: response.status,
-        body: text
-      });
-    }
-
-    const data = JSON.parse(text);
+    const data = await response.json();
 
     res.setHeader("Access-Control-Allow-Origin", "*");
 
-    return res.status(200).json({
-      results: data.data || []
-    });
+    return res.status(200).json(data);
 
-  } catch (err) {
+  } catch (error) {
 
-    console.error("SERVER ERROR:", err);
+    console.error("Proxy error:", error);
 
     return res.status(500).json({
       error: "Proxy failed"
