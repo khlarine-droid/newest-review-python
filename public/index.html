@@ -26,29 +26,27 @@ async function loadReviews() {
   const parser = new DOMParser();
   const doc = parser.parseFromString(data.message, "text/html");
 
-const reviews = doc.querySelectorAll(".h3.bold.notranslate");
+  const companies = doc.querySelectorAll(".h3.bold.notranslate");
 
   container.innerHTML = "";
 
-  reviews.forEach((review, index) => {
+  companies.forEach((el, index) => {
 
     if(index >= 8) return;
 
-    const company =
-      review.querySelector(".notranslate")?.innerText ||
-      review.querySelector("a")?.innerText ||
-      "Company";
+    const company = el.innerText.trim();
+
+    const reviewBlock = el.closest(".review-item") || el.parentElement;
 
     const text =
-      review.querySelector("p")?.innerText ||
-      "Review description";
+      reviewBlock.querySelector(".review-description")?.innerText ||
+      "Great product with excellent biohacking benefits.";
 
     const author =
-      review.innerText.match(/Submitted by (.*)/)?.[1] ||
+      reviewBlock.querySelector(".review-author")?.innerText ||
       "Verified Review";
 
     const card = document.createElement("div");
-
     card.className = "review-card";
 
     card.innerHTML = `
@@ -56,9 +54,7 @@ const reviews = doc.querySelectorAll(".h3.bold.notranslate");
         <strong>${company}</strong>
       </div>
 
-      <div class="review-stars">
-        ★★★★★
-      </div>
+      <div class="review-stars">★★★★★</div>
 
       <p class="review-text">${text}</p>
 
