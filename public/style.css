@@ -1,37 +1,89 @@
+body{
+  font-family: 'Open Sans', sans-serif;
+  background:#ffffff;
+  margin:40px;
+}
+
+h1{
+  font-family:'Merriweather', serif;
+  font-size:34px;
+  margin-bottom:30px;
+}
+
 #reviews{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:16px;
-  margin-top:30px;
+  gap:18px;
 }
 
-.review-card{
+/* Each review card */
+
+.review{
   background:#f5f5f7;
   border:1px solid rgba(0,0,0,.08);
   border-radius:12px;
-  padding:16px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  font-family:Open Sans;
+  padding:18px;
+  transition:.25s;
 }
+
+.review:hover{
+  transform:translateY(-4px);
+  box-shadow:0 10px 25px rgba(0,0,0,.1);
+}
+
+/* Company name */
+
+.review .notranslate{
+  font-weight:700;
+  font-size:13px;
+  color:#2a2a3a;
+}
+
+/* Review title */
+
+.review-title{
+  font-family:'Merriweather', serif;
+  font-size:15px;
+  font-weight:700;
+  margin:8px 0;
+  color:#0a0a1a;
+}
+
+/* Stars */
 
 .review-stars{
   color:#e07800;
+  font-size:12px;
+  margin-bottom:8px;
 }
 
-.review-text{
+/* Review text */
+
+.review-description{
   font-size:13px;
   color:#666;
+  line-height:1.6;
+  margin-bottom:12px;
 }
 
-.review-footer{
-  display:flex;
-  justify-content:space-between;
-  font-size:11px;
-  margin-top:auto;
+/* Footer */
+
+.review-author{
+  font-size:10px;
+  text-transform:uppercase;
+  color:#999;
 }
 
-.review-read{
-  color:#e07800;
+/* Responsive */
+
+@media(max-width:1024px){
+  #reviews{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:640px){
+  #reviews{
+    grid-template-columns:1fr;
+  }
 }
