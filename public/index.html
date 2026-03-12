@@ -22,7 +22,46 @@ async function loadReviews() {
     return;
   }
 
-  container.innerHTML = data.message;
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(data.message, "text/html");
+
+  const reviews = doc.querySelectorAll(".review");
+
+  container.innerHTML = "";
+
+  reviews.forEach((review, index) => {
+
+    if(index >= 8) return;
+
+    const company = review.querySelector(".notranslate")?.innerText || "Company";
+    const title = review.querySelector(".review-title")?.innerText || "";
+    const text = review.querySelector(".review-description")?.innerText || "";
+    const author = review.querySelector(".review-author")?.innerText || "Verified Review";
+
+    const card = document.createElement("div");
+
+    card.className = "review-card";
+
+    card.innerHTML = `
+      <div class="review-company">
+        <strong>${company}</strong>
+      </div>
+
+      <div class="review-stars">
+        ★★★★★
+      </div>
+
+      <p class="review-text">${text}</p>
+
+      <div class="review-footer">
+        <span>${author}</span>
+        <span class="review-read">Read More →</span>
+      </div>
+    `;
+
+    container.appendChild(card);
+
+  });
 
 }
 
