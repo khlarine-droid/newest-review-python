@@ -79,6 +79,18 @@ cards.sort(()=>Math.random()-0.5);
 
 cards = cards.slice(0,12);
 
+  /* COMPANY LOGO */
+
+      const logo =
+        r.querySelector(".member-review-image img")?.src ||
+        "";
+
+      /* COMPANY LINK */
+
+      const link =
+        r.querySelector("a")?.href ||
+        "#";
+    
 /* CREATE CARDS */
 
 cards.forEach(c=>{
