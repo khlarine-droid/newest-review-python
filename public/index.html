@@ -35,7 +35,7 @@
 
 <script>
 
-async function loadReviews() {
+async function loadReviews(){
 
   const res = await fetch("/api/reviews");
   const data = await res.json();
@@ -43,11 +43,60 @@ async function loadReviews() {
   const container = document.getElementById("reviews");
 
   if(!data.message){
-    container.innerHTML = "No reviews available yet.";
+    container.innerHTML = "No reviews available.";
     return;
   }
 
-  container.innerHTML = data.message;
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(data.message,"text/html");
+
+  const reviews = doc.querySelectorAll(".review");
+
+  const companies = {};
+  const results = [];
+
+  reviews.forEach(r => {
+
+    const company = r.querySelector(".notranslate")?.innerText;
+
+    if(!company) return;
+
+    if(!companies[company]){
+      companies[company] = true;
+      results.push(r);
+    }
+
+  });
+
+  container.innerHTML = "";
+
+  results.slice(0,8).forEach(r => {
+
+    const company = r.querySelector(".notranslate")?.innerText || "";
+    const text = r.querySelector(".review-description")?.innerText || "";
+    const link = r.querySelector("a")?.href || "#";
+
+    const card = document.createElement("a");
+    card.className="review-card";
+    card.href=link;
+    card.target="_blank";
+
+    card.innerHTML=`
+      <div class="review-company">${company}</div>
+
+      <div class="review-stars">★★★★★</div>
+
+      <div class="review-text">${text}</div>
+
+      <div class="review-footer">
+        <span>Verified Review</span>
+        <span>Read More →</span>
+      </div>
+    `;
+
+    container.appendChild(card);
+
+  });
 
 }
 
