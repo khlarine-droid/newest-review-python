@@ -32,18 +32,26 @@
 </div>
 
 <div id="reviews"></div>
-
 <script>
 
 async function loadReviews(){
 
   const res = await fetch("/api/reviews");
-  const data = await res.json();
+  const json = await res.json();
 
   const container = document.getElementById("reviews");
 
+  /* detect array location */
+
+  const data =
+    json.results ||
+    json.data ||
+    json.message ||
+    json;
+
   if(!Array.isArray(data)){
     container.innerHTML = "No reviews available.";
+    console.log("API response:", json);
     return;
   }
 
@@ -56,9 +64,11 @@ async function loadReviews(){
     const company =
       r?.user_schema?.company_name ||
       r?.member_name ||
+      r?.company_name ||
       "Company";
 
     if(companies[company]) return;
+
     companies[company] = true;
 
     const text =
@@ -71,11 +81,11 @@ async function loadReviews(){
 
     const card = document.createElement("a");
 
-    card.className="review-card";
-    card.href=link;
-    card.target="_blank";
+    card.className = "review-card";
+    card.href = link;
+    card.target = "_blank";
 
-    card.innerHTML=`
+    card.innerHTML = `
       <div class="review-company">${company}</div>
       <div class="review-stars">★★★★★</div>
       <div class="review-text">${text}</div>
