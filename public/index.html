@@ -69,9 +69,8 @@ async function loadReviews(){
 
       let link =
         r.querySelector("a[href*='/members/']")?.href ||
-        r.querySelector("a")?.href ||
-        "https://www.biohackingcompanies.com";
-
+        "https://www.biohackingcompanies.com" +
+        (r.querySelector("a")?.getAttribute("href") || "");
       const card = document.createElement("a");
 
       card.className = "review-card";
