@@ -1,37 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Newest Reviews</title>
-<link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
-</head>
-
-<body>
-
-<h1 style="display:none">Newest Reviews</h1>
-
-<div class="reviews-header">
-
-  <div class="reviews-title-wrap">
-    <div class="reviews-overline">
-      Biohacking & Wellness
-    </div>
-
-    <h2 class="reviews-title">
-      Newest <em>Reviews</em>
-    </h2>
-  </div>
-
-  <a class="reviews-view-all"
-     href="https://www.biohackingcompanies.com/reviews"
-     target="_blank">
-
-     View All →
-  </a>
-
-</div>
-
-<div id="reviews"></div>
 <script>
 
 async function loadReviews(){
@@ -41,17 +7,20 @@ async function loadReviews(){
 
   const container = document.getElementById("reviews");
 
-  /* detect array location */
-
-  const data =
-    json.results ||
-    json.data ||
-    json.message ||
-    json;
-
-  if(!Array.isArray(data)){
+  if(!json.message){
     container.innerHTML = "No reviews available.";
-    console.log("API response:", json);
+    return;
+  }
+
+  /* Convert HTML string into DOM */
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(json.message, "text/html");
+
+  const reviews = doc.querySelectorAll(".module.search_result");
+
+  if(!reviews.length){
+    container.innerHTML = "No reviews available.";
     return;
   }
 
@@ -59,25 +28,24 @@ async function loadReviews(){
 
   const companies = {};
 
-  data.slice(0,50).forEach(r => {
+  reviews.forEach(r => {
 
     const company =
-      r?.user_schema?.company_name ||
-      r?.member_name ||
-      r?.company_name ||
+      r.querySelector(".notranslate")?.innerText ||
+      r.querySelector("h3")?.innerText ||
       "Company";
 
     if(companies[company]) return;
-
     companies[company] = true;
 
     const text =
-      r.review_title ||
-      r.review_description ||
+      r.querySelector(".review-description")?.innerText ||
+      r.querySelector("p")?.innerText ||
       "";
 
     const link =
-      "https://www.biohackingcompanies.com/members/reviews/newest/";
+      r.querySelector("a")?.href ||
+      "https://www.biohackingcompanies.com/reviews";
 
     const card = document.createElement("a");
 
@@ -104,6 +72,3 @@ async function loadReviews(){
 loadReviews();
 
 </script>
-
-</body>
-</html>
