@@ -30,12 +30,9 @@ body{
   margin-bottom:10px;
 }
 
-/* orange lines */
-
 .reviews-overline::before,
 .reviews-overline::after{
   content:"";
-  display:block;
   width:28px;
   height:1px;
   background:#e07800;
@@ -76,74 +73,67 @@ body{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:18px;
+  margin-top:40px;
 }
 
 /* ---------- Review Card ---------- */
 
-.review{
-  background:#f5f5f7;
-  border:1px solid rgba(0,0,0,.08);
-  border-radius:12px;
+.review-card{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
   padding:18px;
+  background:#f5f5f7;
+  border-radius:12px;
+  border:1px solid rgba(0,0,0,.08);
+  text-decoration:none;
+  color:#333;
   transition:.25s;
 }
 
-.review:hover{
+.review-card:hover{
   transform:translateY(-4px);
-  box-shadow:0 10px 25px rgba(0,0,0,.1);
+  box-shadow:0 10px 30px rgba(0,0,0,.1);
 }
 
 /* ---------- Company ---------- */
 
-.review .notranslate{
+.review-company{
   font-weight:700;
   font-size:13px;
-  color:#2a2a3a;
-}
-
-/* ---------- Review Title ---------- */
-
-.review-title{
-  font-family:'Merriweather', serif;
-  font-size:15px;
-  font-weight:700;
-  margin:8px 0;
-  color:#0a0a1a;
 }
 
 /* ---------- Stars ---------- */
 
 .review-stars{
-  color:#e07800;
-  font-size:12px;
-  margin-bottom:8px;
+  color:#ff9500;
+  font-size:13px;
 }
 
 /* ---------- Review Text ---------- */
 
-.review-description{
-  font-size:13px;
-  color:#666;
+.review-text{
+  font-size:12px;
   line-height:1.6;
-  margin-bottom:12px;
+  color:#666;
 }
 
 /* ---------- Footer ---------- */
 
-.review-author{
+.review-footer{
+  display:flex;
+  justify-content:space-between;
   font-size:10px;
-  text-transform:uppercase;
   color:#999;
+  margin-top:auto;
 }
 
 /* ---------- Responsive ---------- */
 
 @media(max-width:1024px){
-
   #reviews{
     grid-template-columns:repeat(2,1fr);
   }
-
 }
 
 @media(max-width:640px){
@@ -158,54 +148,4 @@ body{
     gap:15px;
   }
 
-
-}
-
-#reviews{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:18px;
-margin-top:40px;
-}
-
-.review-card{
-display:flex;
-flex-direction:column;
-gap:10px;
-padding:18px;
-background:#f5f5f7;
-border-radius:12px;
-border:1px solid rgba(0,0,0,.08);
-text-decoration:none;
-color:#333;
-transition:.25s;
-}
-
-.review-card:hover{
-transform:translateY(-4px);
-box-shadow:0 10px 30px rgba(0,0,0,.1);
-}
-
-.review-company{
-font-weight:700;
-font-size:13px;
-}
-
-.review-stars{
-color:#ff9500;
-font-size:13px;
-}
-
-.review-text{
-font-size:12px;
-line-height:1.6;
-color:#666;
-}
-
-.review-footer{
-display:flex;
-justify-content:space-between;
-font-size:10px;
-color:#999;
-margin-top:auto;
 }
