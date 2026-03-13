@@ -2,6 +2,8 @@
 <html>
 <head>
 
+<link rel="icon" href="favicon.ico">
+
 <meta charset="UTF-8">
 <title>Newest Reviews</title>
 
@@ -34,82 +36,108 @@ async function loadReviews(){
     const parser = new DOMParser();
     const doc = parser.parseFromString(json.message,"text/html");
 
-    const reviews = doc.querySelectorAll(".module.search_result");
+    /* GET REVIEWS */
+
+    const reviews = doc.querySelectorAll(".recent_reviews .member-review");
 
     container.innerHTML="";
 
-    const companies = {};
-    let cards = [];
+    /* CONVERT TO ARRAY */
 
-reviews.forEach(r=>{
+    let reviewArray = Array.from(reviews);
 
-  const company =
-    r.querySelector(".notranslate")?.innerText ||
-    r.querySelector("h3")?.innerText ||
-    "Company";
+    /* RANDOMIZE ORDER */
 
-  let description =
-    r.querySelectorAll("p")[1]?.innerText ||
-    r.querySelector("p")?.innerText ||
-    "";
+    reviewArray.sort(()=>Math.random()-0.5);
 
-  if(description.length > 140){
-    description = description.substring(0,137)+"...";
-  }
+    const companies={};
 
-  const path =
-    r.querySelector("a")?.getAttribute("href") || "";
+    let count=0;
 
-  const link =
-    "https://www.biohackingcompanies.com"+path;
+    for(const r of reviewArray){
 
-  cards.push({
-    company,
-    description,
-    link
-  });
+      if(count>=12) break;
 
-});
+      /* COMPANY NAME */
 
-/* RANDOM ORDER */
+      const company =
+        r.querySelector(".review-title")?.innerText ||
+        r.querySelector("h3")?.innerText ||
+        "Company";
 
-cards.sort(()=>Math.random()-0.5);
+      /* PREVENT DUPLICATE COMPANIES */
 
-/* LIMIT TO 12 */
+      if(companies[company]) continue;
+      companies[company]=true;
 
-cards = cards.slice(0,12);
+      /* DESCRIPTION */
 
-    
-/* CREATE CARDS */
+      let description =
+        r.querySelector(".member-review-info p")?.innerText ||
+        "";
 
-cards.forEach(c=>{
+      if(description.length>140){
+        description = description.substring(0,137)+"...";
+      }
 
-  const card=document.createElement("a");
+      /* COMPANY LOGO */
 
-  card.className="review-card";
-  card.href=c.link;
-  card.target="_blank";
+      const logo =
+        r.querySelector(".member-review-image img")?.src ||
+        "";
 
-  card.innerHTML=`
-    <div class="review-company">${c.company}</div>
-    <div class="review-stars">★★★★★</div>
-    <div class="review-text">${c.description}</div>
-    <div class="review-footer">
-      <span>Verified Review</span>
-      <span>Read More →</span>
-    </div>
-  `;
+      /* COMPANY LINK */
 
-  container.appendChild(card);
+      const link =
+        r.querySelector("a")?.href ||
+        "#";
 
-});
+      /* CREATE CARD */
+
+      const card=document.createElement("a");
+
+      card.className="review-card";
+      card.href=link;
+      card.target="_blank";
+
+      card.innerHTML=`
+
+      <div class="review-header">
+
+        <img class="review-logo" src="${logo}"/>
+
+        <div>
+
+          <div class="review-company">${company}</div>
+
+          <div class="review-stars">★★★★★</div>
+
+        </div>
+
+      </div>
+
+      <div class="review-text">
+      ${description}
+      </div>
+
+      <div class="review-footer">
+        <span>Verified Review</span>
+        <span>Read More →</span>
+      </div>
+
+      `;
+
+      container.appendChild(card);
+
+      count++;
+
+    }
 
   }
 
   catch(err){
 
-    document.getElementById("reviews").innerHTML=
-    "Unable to load reviews.";
+    document.getElementById("reviews").innerHTML="Unable to load reviews.";
 
     console.error(err);
 
@@ -120,8 +148,6 @@ cards.forEach(c=>{
 loadReviews();
 
 </script>
-
-
 
 </body>
 </html>
