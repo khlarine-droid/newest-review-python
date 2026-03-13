@@ -15,70 +15,93 @@
 
 async function loadReviews(){
 
-  const res = await fetch("/api/reviews");
-  const json = await res.json();
+  try{
 
-  const container = document.getElementById("reviews");
+    const res = await fetch("/api/reviews");
+    const json = await res.json();
 
-  if(!json.message){
-    container.innerHTML = "No reviews available.";
-    return;
+    const container = document.getElementById("reviews");
+
+    if(!json.message){
+      container.innerHTML = "No reviews available.";
+      return;
+    }
+
+    /* Convert HTML string into DOM */
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(json.message, "text/html");
+
+    const reviews = doc.querySelectorAll(".module.search_result");
+
+    if(!reviews.length){
+      container.innerHTML = "No reviews available.";
+      return;
+    }
+
+    container.innerHTML = "";
+
+    const companies = {};
+    let count = 0;
+
+    reviews.forEach(r => {
+
+      if(count >= 8) return;
+
+      const company =
+        r.querySelector(".notranslate")?.innerText ||
+        r.querySelector("h3")?.innerText ||
+        "Company";
+
+      if(companies[company]) return;
+
+      companies[company] = true;
+
+      let text =
+        r.querySelector(".review-description")?.innerText ||
+        r.querySelector("p")?.innerText ||
+        "";
+
+      /* shorten long reviews */
+
+      if(text.length > 160){
+        text = text.substring(0,157) + "...";
+      }
+
+      const link =
+        r.querySelector("a")?.href ||
+        "https://www.biohackingcompanies.com/reviews";
+
+      const card = document.createElement("a");
+
+      card.className = "review-card";
+      card.href = link;
+      card.target = "_blank";
+
+      card.innerHTML = `
+        <div class="review-company">${company}</div>
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">${text}</div>
+        <div class="review-footer">
+          <span>Verified Review</span>
+          <span>Read More →</span>
+        </div>
+      `;
+
+      container.appendChild(card);
+
+      count++;
+
+    });
+
+  }catch(err){
+
+    document.getElementById("reviews").innerHTML =
+      "Unable to load reviews.";
+
+    console.error(err);
+
   }
-
-  /* Convert HTML string into DOM */
-
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(json.message, "text/html");
-
-  const reviews = doc.querySelectorAll(".module.search_result");
-
-  if(!reviews.length){
-    container.innerHTML = "No reviews available.";
-    return;
-  }
-
-  container.innerHTML = "";
-
-  const companies = {};
-
-  reviews.forEach(r => {
-
-    const company =
-      r.querySelector(".notranslate")?.innerText ||
-      r.querySelector("h3")?.innerText ||
-      "Company";
-
-    if(companies[company]) return;
-    companies[company] = true;
-
-    const text =
-      r.querySelector(".review-description")?.innerText ||
-      r.querySelector("p")?.innerText ||
-      "";
-
-    const link =
-      r.querySelector("a")?.href ||
-      "https://www.biohackingcompanies.com/reviews";
-
-    const card = document.createElement("a");
-
-    card.className = "review-card";
-    card.href = link;
-    card.target = "_blank";
-
-    card.innerHTML = `
-      <div class="review-company">${company}</div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">${text}</div>
-      <div class="review-footer">
-        <span>Verified Review</span>
-        <span>Read More →</span>
-      </div>
-    `;
-
-    container.appendChild(card);
-
-  });
 
 }
 
