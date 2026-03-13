@@ -35,19 +35,59 @@
 
 <script>
 
-async function loadReviews() {
+async function loadReviews(){
 
   const res = await fetch("/api/reviews");
   const data = await res.json();
 
   const container = document.getElementById("reviews");
 
-  if(!data.message){
-    container.innerHTML = "No reviews available yet.";
+  if(!Array.isArray(data)){
+    container.innerHTML = "No reviews available.";
     return;
   }
 
-  container.innerHTML = data.message;
+  container.innerHTML = "";
+
+  const companies = {};
+
+  data.slice(0,50).forEach(r => {
+
+    const company =
+      r?.user_schema?.company_name ||
+      r?.member_name ||
+      "Company";
+
+    if(companies[company]) return;
+    companies[company] = true;
+
+    const text =
+      r.review_title ||
+      r.review_description ||
+      "";
+
+    const link =
+      "https://www.biohackingcompanies.com/members/reviews/newest/";
+
+    const card = document.createElement("a");
+
+    card.className="review-card";
+    card.href=link;
+    card.target="_blank";
+
+    card.innerHTML=`
+      <div class="review-company">${company}</div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">${text}</div>
+      <div class="review-footer">
+        <span>Verified Review</span>
+        <span>Read More →</span>
+      </div>
+    `;
+
+    container.appendChild(card);
+
+  });
 
 }
 
