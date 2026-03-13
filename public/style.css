@@ -17,12 +17,29 @@ body{
 }
 
 .reviews-overline{
+  display:flex;
+  align-items:center;
+  gap:12px;
+
   font-size:10px;
   letter-spacing:.22em;
   text-transform:uppercase;
   color:#e07800;
   font-weight:700;
-  margin-bottom:8px;
+
+  margin-bottom:10px;
+}
+
+/* orange lines */
+
+.reviews-overline::before,
+.reviews-overline::after{
+  content:"";
+  display:block;
+  width:28px;
+  height:1px;
+  background:#e07800;
+  opacity:.6;
 }
 
 .reviews-title{
