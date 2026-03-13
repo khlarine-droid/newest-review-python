@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <link rel="icon" href="favicon.ico">
+
+<meta charset="UTF-8">
+<title>Newest Reviews</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -24,63 +28,55 @@ async function loadReviews(){
     const container = document.getElementById("reviews");
 
     if(!json.message){
-      container.innerHTML = "No reviews available.";
+      container.innerHTML="No reviews available.";
       return;
     }
 
     const parser = new DOMParser();
-    const doc = parser.parseFromString(json.message, "text/html");
+    const doc = parser.parseFromString(json.message,"text/html");
 
     const reviews = doc.querySelectorAll(".module.search_result");
 
-    if(!reviews.length){
-      container.innerHTML = "No reviews available.";
-      return;
-    }
+    container.innerHTML="";
 
-    container.innerHTML = "";
-
-    const companies = {};
     let count = 0;
 
-    reviews.forEach(r => {
+    for (const r of reviews) {
 
-      if(count >= 8) return;
+      if(count >= 8) break;
 
       const company =
         r.querySelector(".notranslate")?.innerText ||
         r.querySelector("h3")?.innerText ||
         "Company";
 
-      if(companies[company]) return;
+      let description =
+        r.querySelector("p")?.innerText || "";
 
-      companies[company] = true;
-
-      let text =
-        r.querySelector(".review-description")?.innerText ||
-        r.querySelector("p")?.innerText ||
-        "";
-
-      if(text.length > 140){
-        text = text.substring(0,137) + "...";
+      if(description.includes("Overall Rating")){
+        description = r.querySelectorAll("p")[1]?.innerText || "";
       }
 
-      /* COMPANY PAGE LINK */
+      if(description.length > 140){
+        description = description.substring(0,137) + "...";
+      }
 
-      let link =
-        r.querySelector("a[href*='/members/']")?.href ||
-        "https://www.biohackingcompanies.com" +
-        (r.querySelector("a")?.getAttribute("href") || "");
+      const path =
+        r.querySelector("a")?.getAttribute("href") || "";
+
+      const link =
+        "https://www.biohackingcompanies.com" + path;
+
       const card = document.createElement("a");
 
-      card.className = "review-card";
-      card.href = link;
-      card.target = "_blank";
+      card.className="review-card";
+      card.href=link;
+      card.target="_blank";
 
       card.innerHTML = `
         <div class="review-company">${company}</div>
         <div class="review-stars">★★★★★</div>
-        <div class="review-text">${text}</div>
+        <div class="review-text">${description}</div>
         <div class="review-footer">
           <span>Verified Review</span>
           <span>Read More →</span>
@@ -91,12 +87,14 @@ async function loadReviews(){
 
       count++;
 
-    });
+    }
 
-  }catch(err){
+  }
+
+  catch(err){
 
     document.getElementById("reviews").innerHTML =
-      "Unable to load reviews.";
+    "Unable to load reviews.";
 
     console.error(err);
 
