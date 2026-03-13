@@ -57,9 +57,11 @@ async function loadReviews(){
 
   reviews.forEach(r => {
 
-    const company = r.querySelector(".notranslate")?.innerText;
-
-    if(!company) return;
+    const company =
+      r.querySelector(".notranslate")?.innerText ||
+      r.querySelector(".review-company")?.innerText ||
+      r.querySelector("a")?.innerText ||
+      "Company";
 
     if(!companies[company]){
       companies[company] = true;
@@ -68,26 +70,32 @@ async function loadReviews(){
 
   });
 
-  container.innerHTML = "";
+  container.innerHTML="";
 
   results.slice(0,8).forEach(r => {
 
-    const company = r.querySelector(".notranslate")?.innerText || "";
-    const text = r.querySelector(".review-description")?.innerText || "";
+    const company =
+      r.querySelector(".notranslate")?.innerText ||
+      r.querySelector(".review-company")?.innerText ||
+      "Company";
+
+    const text =
+      r.querySelector(".review-description")?.innerText ||
+      r.querySelector("p")?.innerText ||
+      "";
+
     const link = r.querySelector("a")?.href || "#";
 
     const card = document.createElement("a");
+
     card.className="review-card";
     card.href=link;
     card.target="_blank";
 
     card.innerHTML=`
       <div class="review-company">${company}</div>
-
       <div class="review-stars">★★★★★</div>
-
       <div class="review-text">${text}</div>
-
       <div class="review-footer">
         <span>Verified Review</span>
         <span>Read More →</span>
